@@ -24,7 +24,7 @@
 
 <h2 align="left"> Materials 📖</h2>
 
-* 📋 <a href="" target="_blank">Presentation</a>
+* 📋 <a href="https://github.com/uzlova/datacon2024/blob/main/cpp_database.db" target="_blank">Database</a>
 * 💻 <a href="https://github.com/uzlova/datacon2024/blob/main/main.ipynb" target="_blank">Code</a>
 
 
