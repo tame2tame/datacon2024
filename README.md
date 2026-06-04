@@ -1,28 +1,64 @@
-<h1> DataCon 3.0. Design a Peptide Vector for Drug Delivery 🔬</h1>
+# Cell-Penetrating Peptide Activity Prediction (CPP)
 
-<h2 align="left">Task ❗️</h2>
+ML pipeline for CPP classification and cellular uptake regression,
+built on the POSEIDON experimental database. Developed as part of the
+DataCon 3.0 hackathon (AI in Chemistry track).
 
-**Our ultimate goal is to develop precise machine learning (ML) model allowing to <strong> design CPPs with superior activity**
+## Problem
 
----
-<h2> About the project :information_source: </h2>
-<h3> What are CPPs? </h3>
+Cell-penetrating peptides (CPPs) are short amino acid sequences capable of crossing
+cell membranes, enabling intracellular delivery of drugs, nucleic acids, and proteins.
+The goal is to design CPPs with superior activity using ML models — reducing the need
+for costly wet-lab screening.
 
-   <strong> Cell-penetrating peptides (CPPs) </strong> are short sequences of amino acids that have the remarkable ability to cross cellular membranes, facilitating the intracellular delivery of various therapeutic agents, including drugs, nucleic acids, and proteins. These peptides exploit mechanisms such as direct penetration or endocytosis to traverse cell membranes, making them powerful tools in drug delivery systems.
+## Pipeline
 
-<img src="https://github.com/acid-design-lab/DataCon24/assets/82499756/2f5822f6-cac3-492f-9a73-40b3d3e60b3e" alt="drawing" width="500"/>
+**Data**  
+♡ Source: POSEIDON database (~2 000 experimental records)  
+♡ Preprocessing: messy uptake parsing (±, <, / notation), time/temp normalization,
+  IQR-based outlier removal, modified sequence filtering  
+♡ Feature engineering: RDKit molecular descriptors (MolWt, TPSA, MolLogP, BertzCT,
+  BalabanJ, HeavyAtomCount, NHOHCount, NOCount, RingCount, Ipc, LabuteASA, MolMR, qed),
+  molecular mass via molmass, binary CPP label from curated FASTA/txt sources  
 
-   In real-world medical applications, CPPs are being leveraged to enhance the efficacy of treatments for a range of conditions. For instance, they are used in targeted cancer therapies to deliver chemotherapeutic agents directly to tumor cells, minimizing damage to healthy tissues. Additionally, CPPs are employed in gene therapy to transport genetic material into cells, offering potential treatments for genetic disorders like cystic fibrosis and muscular dystrophy. Their versatility and efficiency in overcoming cellular barriers position CPPs as a promising frontier in the development of advanced therapeutic strategies.
- 
----
+**Task 1 — CPP Classification**  
+♡ Model: Random Forest (MinMaxScaler + SimpleImputer pipeline)  
+♡ Features: RDKit descriptors  
+♡ Target: CPP / non-CPP binary label  
 
-<h1 align="left">Final answer ✅</h1>
+| Metric | Score |
+|---|---|
+| Accuracy | 0.802 |
+| Precision | 0.804 |
+| Recall | 0.802 |
+| F1-score | 0.801 |
 
-<span style="font-size:1.5em;">1) We made a classification model that used **descriptors values** as features, and **CPP sequences** as a target variable. (F1-score: **0.8005**)
+**Task 2 — Cellular Uptake Regression**  
+♡ Model: CatBoost (grid search over iterations, learning rate, depth)  
+♡ Features: descriptors + experimental conditions (cell line, cargo, method, time, temp)  
+♡ Target: normalized uptake mean  
 
-<span style="font-size:1.5em;">1) We made a uptake quantitative prediction (R^2  **0.79**) </span> 
+| Metric | Score |
+|---|---|
+| R² | 0.79 |
+| MAE | 69.56 |
+| RMSE | 225.13 |
 
-<h2 align="left"> Materials 📖</h2>
+## Stack
+
+![Python](https://img.shields.io/badge/Python-D6759E?style=for-the-badge&logo=python&logoColor=white)
+![Pandas](https://img.shields.io/badge/Pandas-D6759E?style=for-the-badge&logo=pandas&logoColor=white)
+![RDKit](https://img.shields.io/badge/RDKit-D6759E?style=for-the-badge&logo=rdkit&logoColor=white)
+![BioPython](https://img.shields.io/badge/BioPython-D6759E?style=for-the-badge&logo=biopython&logoColor=white)
+![molmass](https://img.shields.io/badge/molmass-D6759E?style=for-the-badge&logo=molmass&logoColor=white)
+![scikit-learn](https://img.shields.io/badge/scikit--learn-D6759E?style=for-the-badge&logo=scikit-learn&logoColor=white)
+![CatBoost](https://img.shields.io/badge/CatBoost-D6759E?style=for-the-badge&logo=catboost&logoColor=white)
+
+## Data Sources
+
+POSEIDON database · CPPBase (FASTA) · Experimental CPP/non-CPP sequence lists
+
+<h2 align="left"> Materials</h2>
 
 * 📋 <a href="https://github.com/uzlova/datacon2024/blob/main/cpp_database.db" target="_blank">Database</a>
 * 💻 <a href="https://github.com/uzlova/datacon2024/blob/main/main.ipynb" target="_blank">Code</a>
